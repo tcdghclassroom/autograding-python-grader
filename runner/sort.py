@@ -19,7 +19,6 @@ from .data import Hierarchy, TestInfo
 
 # pylint: disable=invalid-name, no-self-use
 
-
 class TestOrder(NodeVisitor):
     """
     Visits test_* methods in a file and caches their definition order.
@@ -90,7 +89,7 @@ class TestOrder(NodeVisitor):
         """
         if test_id not in cls._cache:
             tree = parse(source.read_text(), source.name)
-            cls(Hierarchy(test_id.split("::")[0])).visit(tree)
+            cls(Hierarchy("::".join(test_id.split("::")[0:-1]))).visit(tree)
         return cls._cache[test_id].lineno
 
 
@@ -102,6 +101,7 @@ class TestOrder(NodeVisitor):
         :param source: Path of source code file
         :return: str of the source code of the given test.
         """
+
         text = source.read_text()
         testinfo = cls._cache[test_id]
 
